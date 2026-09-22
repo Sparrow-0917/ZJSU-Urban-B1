@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek Harness 安装、启动与清理操作手册</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #f5f6f8;
+    color: #2c2c2c;
+    line-height: 1.7;
+    padding: 24px 16px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    padding: 36px 32px;
+    border-radius: 12px 12px 0 0;
+  }
+  header h1 { font-size: 1.6rem; font-weight: 600; margin-bottom: 8px; }
+  header p { font-size: 0.9rem; opacity: 0.75; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    margin-top: 10px;
+  }
+  .content {
+    background: #fff;
+    padding: 36px 32px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  h2 {
+    font-size: 1.2rem;
+    color: #1a1a2e;
+    margin: 32px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8eaf0;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 {
+    font-size: 1rem;
+    color: #333;
+    margin: 20px 0 10px;
+  }
+  p { margin-bottom: 10px; font-size: 0.92rem; }
+  ul, ol { margin: 8px 0 14px 20px; font-size: 0.92rem; }
+  li { margin-bottom: 5px; }
+  code {
+    background: #f0f1f5;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 0.86rem;
+    color: #d6336c;
+  }
+  pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 16px 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    margin: 12px 0 18px;
+    position: relative;
+  }
+  pre .comment { color: #6c7086; }
+  pre .cmd { color: #89b4fa; }
+  pre .str { color: #a6e3a1; }
+  pre .warn { color: #f9e2af; }
+  .tip {
+    background: #eef6ff;
+    border-left: 4px solid #4a9eff;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  .warn-box {
+    background: #fff8e6;
+    border-left: 4px solid #f0a500;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  .danger-box {
+    background: #fff0f0;
+    border-left: 4px solid #e03131;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 0.88rem;
+  }
+  th {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e8eaf0;
+  }
+  tr:nth-child(even) td { background: #fafbfd; }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .tag-safe { background: #d3f9d8; color: #2b8a3e; }
+  .tag-caution { background: #fff3bf; color: #b08800; }
+  .tag-danger { background: #ffe3e3; color: #c92a2a; }
+  footer {
+    text-align: center;
+    padding: 24px 0 8px;
+    font-size: 0.8rem;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>DeepSeek Harness 操作手册</h1>
+  <p>安装 · 启动 · 排错 · 清理 —— 一站式的 Windows PowerShell 操作文档</p>
+  <span class="badge">当前锁定版本：@deepseek-ai/dsh@0.1.7-alpha.1</span>
+</header>
+
+<div class="content">
+
+<!-- ====== 前置条件 ====== -->
+<h2>一、前置条件</h2>
+<p>在开始之前，请确认你的电脑已安装 <strong>Node.js</strong>，版本要求为 <code>^22.19.0</code> 或 <code>&gt;=24.0.0</code>。</p>
+<pre><span class="comment"># 检查 Node.js 版本</span>
+<span class="cmd">node -v</span></pre>
+<p>如果版本低于要求，请前往 <a href="https://nodejs.org/" target="_blank">nodejs.org</a> 下载安装最新 LTS 版本。</p>
+<div class="tip">
+  <strong>什么是 npx？</strong> npx 是 Node.js 自带的包运行工具，可以临时下载并运行某个 npm 包，不需要全局安装。DeepSeek Harness 官方推荐用 npx 方式启动。
+</div>
+
+<!-- ====== 安装与启动 ====== -->
+<h2>二、安装与启动</h2>
+<h3>2.1 首次安装并启动</h3>
+<p>打开 PowerShell，运行以下命令：</p>
+<pre><span class="cmd">npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web</span></pre>
+<p>首次运行会自动下载依赖包，需要稍等片刻。启动成功后，终端会输出类似地址：</p>
+<pre>dsh web: <span class="str">http://127.0.0.1:3080</span></pre>
+<p>浏览器会自动打开该地址，如果没打开，手动在浏览器输入即可。</p>
+
+<h3>2.2 为什么锁定 0.1.7-alpha.1 这个版本？</h3>
+<p>DeepSeek Harness 目前处于<strong>开发者预览版（Developer Preview）</strong>阶段，npm 上的版本更新较快，不同 rc / alpha 版本之间可能存在依赖不完整的情况（你之前遇到的 <code>ETARGET</code> 错误就是典型表现）。锁定一个已经验证可用的版本，可以有效避免每次启动时因拉取到不完整的新版本而失败。</p>
+
+<h3>2.3 常用启动参数</h3>
+<table>
+  <tr><th>参数</th><th>作用</th><th>示例</th></tr>
+  <tr><td><code>--no-open</code></td><td>启动时不自动打开浏览器</td><td><code>npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web --no-open</code></td></tr>
+  <tr><td><code>--port 3081</code></td><td>指定其他端口（默认 3080）</td><td><code>npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web --port 3081</code></td></tr>
+</table>
+<div class="tip">
+  <strong>日常使用建议：</strong>直接运行上面的启动命令即可。如果想省事，可以在 PowerShell 里按 <code>↑</code> 方向键调出历史命令，或者创建一个 <code>.bat</code> 文件双击启动。
+</div>
+
+<!-- ====== 首次配置 ====== -->
+<h2>三、启动后的首次配置</h2>
+<p>Web UI 打开后，需要配置模型 API Key 才能正常使用：</p>
+<ol>
+  <li>点击左下角 <strong>Settings（设置）</strong> → <strong>Models（模型）</strong>。</li>
+  <li>在 <strong>DeepSeek</strong> 卡片中填入你的 API Key（从 <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a> 获取）。</li>
+  <li>保存后无需重启，立即生效。</li>
+  <li>回到主页，选择一个<strong>工作区（Workspace）</strong>目录，即可开始给 Agent 布置任务。</li>
+</ol>
+
+<!-- ====== 报错处理 ====== -->
+<h2>四、常见报错与解决方法</h2>
+
+<h3>4.1 ETARGET：找不到匹配版本</h3>
+<p><strong>报错内容：</strong></p>
+<pre>npm error code ETARGET
+npm error notarget No matching version found for
+@deepseek-ai/dsh-client-ui-sidebar-documentpreview@^0.1.5-rc.3.</pre>
+<p><strong>原因：</strong>DeepSeek Harness 的 rc / alpha 版本采用分阶段发布，各子包上线时间可能不同步，导致依赖树无法完整解析。npm 镜像源（如淘宝源）的同步延迟也可能导致此问题。</p>
+<p><strong>解决方法：</strong></p>
+<pre><span class="comment"># 方法一：指定一个已知可用的具体版本（推荐）</span>
+<span class="cmd">npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web</span>
+
+<span class="comment"># 方法二：临时使用官方 npm 源安装</span>
+<span class="cmd">npx --yes --registry=https://registry.npmjs.org/ @deepseek-ai/dsh@0.1.7-alpha.1 web</span>
+
+<span class="comment"># 方法三：清理缓存后重试</span>
+<span class="cmd">npm cache clean --force</span>
+<span class="cmd">npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web</span></pre>
+
+<h3>4.2 EADDRINUSE：3080 端口被占用</h3>
+<p><strong>报错内容：</strong></p>
+<pre>Error: listen EADDRINUSE: address already in use 127.0.0.1:3080
+Failed plugins (1): webserver (required)</pre>
+<p><strong>原因：</strong>之前启动的 DSH 进程仍在运行，3080 端口没有被释放。这<strong>不是安装失败</strong>，说明你的 DSH 本来就在正常工作。</p>
+<div class="tip">
+  <strong>先做这一步：</strong>直接打开浏览器访问 <code>http://127.0.0.1:3080</code>。如果页面能正常打开，说明服务已经在运行，你不需要再启动一次，直接用就行。
+</div>
+<p><strong>如果确实想重启：</strong></p>
+<pre><span class="comment"># 查找占用 3080 端口的进程 PID</span>
+<span class="cmd">Get-NetTCPConnection -LocalPort 3080 -State Listen | Select-Object OwningProcess</span>
+
+<span class="comment"># 找到 PID 后，强制结束该进程（把 12345 替换为实际 PID）</span>
+<span class="cmd">Stop-Process -Id 12345 -Force</span>
+
+<span class="comment"># 或者一步到位，自动结束所有占用 3080 的进程</span>
+<span class="cmd">Get-NetTCPConnection -LocalPort 3080 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }</span></pre>
+<p><strong>也可以换个端口启动，不关旧的：</strong></p>
+<pre><span class="cmd">npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web --port 3081</span>
+<span class="comment"># 然后访问 http://127.0.0.1:3081</span></pre>
+
+<h3>4.3 npm warn deprecated：包已弃用</h3>
+<p><strong>报错内容：</strong></p>
+<pre>npm warn deprecated node-domexception@1.0.0:
+Use your platform's native DOMException instead</pre>
+<p><strong>说明：</strong>这不是错误，只是一个提醒。某些依赖包在较新的 Node.js 环境中已被原生功能替代，npm 会提示你“已弃用”。<strong>不会影响程序安装和运行，忽略即可。</strong></p>
+
+<h3>4.4 npm warn using --force</h3>
+<p><strong>报错内容：</strong></p>
+<pre>npm warn using --force Recommended protections disabled.</pre>
+<p><strong>说明：</strong>这不是错误。因为你在命令中使用了 <code>--force</code>，npm 提示你“安全保护已被禁用”。命令已经正常执行，忽略即可。</p>
+
+<!-- ====== 清理与卸载 ====== -->
+<h2>五、清理与卸载</h2>
+<div class="danger-box">
+  <strong>清理前必须做的事：</strong>先关闭正在运行的 DSH 服务（关闭命令行窗口或在窗口中按 <code>Ctrl + C</code>），否则文件可能被占用导致操作失败。
+</div>
+
+<h3>5.1 清理 npx 缓存（安全，推荐优先执行）</h3>
+<p>npx 会把每次运行的包缓存在本地，这是可以安全清理的部分。清理后下次运行会自动重新下载。</p>
+<pre><span class="comment"># 查看并删除 npx 缓存目录</span>
+<span class="cmd">$npxCachePath = Join-Path $env:LocalAppData "npm-cache\_npx"</span>
+<span class="cmd">Write-Host "npx 缓存路径: $npxCachePath"</span>
+<span class="cmd">if (Test-Path $npxCachePath) {</span>
+<span class="cmd">    Remove-Item -Path $npxCachePath -Recurse -Force</span>
+<span class="cmd">    Write-Host "npx 缓存已清理。" -ForegroundColor Green</span>
+<span class="cmd">} else {</span>
+<span class="cmd">    Write-Host "未找到 npx 缓存目录，无需清理。" -ForegroundColor Yellow</span>
+<span class="cmd">}</span></pre>
+<p><span class="tag tag-safe">安全</span> 不会影响任何已安装的程序或个人数据。</p>
+
+<h3>5.2 清理 npm 全局缓存（可选，释放空间）</h3>
+<pre><span class="comment"># 查看缓存条目数量</span>
+<span class="cmd">npm cache ls --parseable | Measure-Object | Select-Object Count</span>
+
+<span class="comment"># 清理整个 npm 缓存</span>
+<span class="cmd">npm cache clean --force</span></pre>
+<p><span class="tag tag-safe">安全</span> 只清理包的压缩缓存，<strong>不会卸载已全局安装的包</strong>。</p>
+
+<h3>5.3 查看 DSH 个人数据目录大小</h3>
+<pre><span class="cmd">$dshPath = "$env:USERPROFILE\.dsh"</span>
+<span class="cmd">if (Test-Path $dshPath) {</span>
+<span class="cmd">    $size = (Get-ChildItem $dshPath -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum).Sum / 1MB</span>
+<span class="cmd">    Write-Host ".dsh 目录大小: $([math]::Round($size, 2)) MB"</span>
+<span class="cmd">    Write-Host "路径: $dshPath"</span>
+<span class="cmd">} else {</span>
+<span class="cmd">    Write-Host "未找到 .dsh 目录。" -ForegroundColor Yellow</span>
+<span class="cmd">}</span></pre>
+
+<h3>5.4 彻底删除 DSH 个人数据（谨慎！）</h3>
+<div class="danger-box">
+  <strong>重要警告：</strong>删除 <code>~/.dsh</code> 目录会永久清除所有会话记录、配置、API 密钥，<strong>不可恢复</strong>。除非你确定以后不再使用 DSH，否则不要执行此操作。
+</div>
+<pre><span class="comment"># 先备份（可选但强烈建议）</span>
+<span class="cmd">Copy-Item -Path "$env:USERPROFILE\.dsh" -Destination "$env:USERPROFILE\.dsh-backup" -Recurse</span>
+
+<span class="comment"># 确认后删除数据目录</span>
+<span class="cmd">Remove-Item -Path "$env:USERPROFILE\.dsh" -Recurse -Force</span></pre>
+<p><span class="tag tag-danger">危险</span> 删除后无法恢复，请务必先备份。</p>
+
+<h3>5.5 清理总结</h3>
+<table>
+  <tr><th>清理目标</th><th>操作</th><th>安全性</th><th>影响</th></tr>
+  <tr>
+    <td>npx 缓存</td>
+    <td>删除 <code>%LocalAppData%\npm-cache\_npx</code></td>
+    <td><span class="tag tag-safe">安全</span></td>
+    <td>仅清理临时包，下次自动重下</td>
+  </tr>
+  <tr>
+    <td>npm 全局缓存</td>
+    <td><code>npm cache clean --force</code></td>
+    <td><span class="tag tag-safe">安全</span></td>
+    <td>释放空间，不影响已安装包</td>
+  </tr>
+  <tr>
+    <td>DSH 个人数据</td>
+    <td>手动删除 <code>~/.dsh</code> 目录</td>
+    <td><span class="tag tag-danger">危险</span></td>
+    <td>丢失会话、配置、密钥，不可恢复</td>
+  </tr>
+</table>
+<p><strong>建议执行顺序：</strong>先清理 npx 缓存 → 如果空间仍紧张再清理 npm 全局缓存 → 第三步根据是否继续使用 DSH 决定，<strong>不要盲目删除 <code>.dsh</code> 目录</strong>。</p>
+
+<!-- ====== 快速参考 ====== -->
+<h2>六、命令速查表</h2>
+<table>
+  <tr><th>场景</th><th>命令</th></tr>
+  <tr><td>检查 Node 版本</td><td><code>node -v</code></td></tr>
+  <tr><td>启动 DSH</td><td><code>npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web</code></td></tr>
+  <tr><td>不自动打开浏览器</td><td><code>npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web --no-open</code></td></tr>
+  <tr><td>换端口启动</td><td><code>npx --yes @deepseek-ai/dsh@0.1.7-alpha.1 web --port 3081</code></td></tr>
+  <tr><td>查找占用 3080 的进程</td><td><code>Get-NetTCPConnection -LocalPort 3080 -State Listen</code></td></tr>
+  <tr><td>结束占用 3080 的进程</td><td><code>Get-NetTCPConnection -LocalPort 3080 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }</code></td></tr>
+  <tr><td>清理 npx 缓存</td><td><code>Remove-Item -Path (Join-Path $env:LocalAppData "npm-cache\_npx") -Recurse -Force</code></td></tr>
+  <tr><td>清理 npm 缓存</td><td><code>npm cache clean --force</code></td></tr>
+  <tr><td>查看可用版本</td><td><code>npm view @deepseek-ai/dsh versions --json</code></td></tr>
+  <tr><td>查看当前 npm 最新版</td><td><code>npm view @deepseek-ai/dsh version</code></td></tr>
+</table>
+
+<!-- ====== 注意事项 ====== -->
+<h2>七、注意事项</h2>
+<ul>
+  <li><strong>不要关闭正在运行 DSH 的命令行窗口</strong>，关掉窗口等于停止服务。</li>
+  <li>下次使用前，先打开浏览器访问 <code>http://127.0.0.1:3080</code>，如果能打开就直接用，不必重新启动。</li>
+  <li>DeepSeek Harness 处于开发者预览阶段，版本迭代较快，<strong>建议锁定 <code>0.1.7-alpha.1</code> 这个已验证可用的版本</strong>。</li>
+  <li>官方 GitHub 仓库：<a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank">github.com/deepseek-ai/deepseek-harness</a></li>
+  <li>API Key 获取地址：<a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></li>
+</ul>
+
+</div>
+
+<footer>
+  <p>DeepSeek Harness 操作手册 · 基于 2026-09-22 实测环境整理</p>
+</footer>
+
+</div>
+</body>
+</html>
